@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.title(' Simulation Audrey NextMonday')
+st.title(' Simulation Audrey')
 
 st.subheader('Paramètres généraux Simulation:')
 col1, col2, col3, col8 = st.columns(4)
