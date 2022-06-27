@@ -1,38 +1,93 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import numpy as np
 
-"""
-# Welcome to Streamlit!
+st.title(' Simulation Audrey NextMonday')
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
+st.subheader('Paramètres généraux Simulation:')
+col1, col2, col3, col8 = st.columns(4)
+with col1:
+    nb_equipe = st.slider("Combien dans l'équipe ?", 1, 6,4)
+with col2:
+    nb_mois = st.slider('Sur combien de mois ?', 1, 24,12)
+with col3:
+    tjm = st.slider("TJM Moyen runner", 100,200,110,10,"%d €")
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+with col8:
+    pourcent_perso = st.slider("% Perso Team", 10,100,40,10,"%d Prct")
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+st.subheader("Paramètres d'activité sur la période:")
+col4, col5, col6 = st.columns(3)
+with col4:
+    nb_runner_month = st.slider('Nb Runner par mois par membre',0.5,5.0,1.0,0.1,"%s Runner")
+with col5:
+    tx_renouv = st.slider('Taux renouvellement Runner', 0, 100,10,10,"%s Prct") / 100
+with col6:
+    duree_moy_contrat = st.slider('Durée Moyenne Contrat', 3, 6,3,1,"%d Mois")
 
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+from_d = pd.date_range(start='07/01/2022', periods=nb_mois, freq='M')
+print(from_d, duree_moy_contrat)
+st.title('Résultats')
 
-    Point = namedtuple('Point', 'x y')
-    data = []
 
-    points_per_turn = total_points / num_turns
+runners = []
+nb_runner = 0
+for x, m in enumerate(from_d): 
+    print(f'-- mois {m}')
+    nb_nx = nb_equipe * nb_runner_month
+    
+    l_r = len(runners)
+    if l_r >= duree_moy_contrat:
+        fin_pour = int(runners[l_r-duree_moy_contrat]['Nx Runner'] * (1-tx_renouv))
+        delta = nb_nx - fin_pour
+        nb_runner += delta
+    else: 
+        nb_runner += nb_nx
+        delta = nb_nx
+    
+    
+    res = {
+        
+        "Date":m,
+        "Comm. Perso":int(nb_runner*tjm*(pourcent_perso/100)),
+        "Nb Runner Total" :int(nb_runner),
+        "Nx Runner":int(nb_nx),
+        "Variation Runner":int(delta),
+        "CA Total":int(nb_runner*tjm),
+        
 
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
+    }
+    runners.append(res)
+    print(res)
+    
+    
+    
+           
+    
+df = pd.DataFrame.from_dict(runners)
+df.set_index('Date',inplace=True)
+df['Total Perso'] = df['Comm. Perso'].cumsum()
 
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+if st.checkbox('Voir le détail des données'):
+    st.dataframe(df) 
+
+chart_data = df['Total Perso']
+chart_data2 = df['Comm. Perso']
+
+st.subheader("Comm. Perso Cumulées:")
+col1, col2  = st.columns(2)
+col1.metric("Total Comm", f"{df['Total Perso'].values[-1]} €")
+col2.metric("Nb Runner Final", f"{df['Nb Runner Total'].values[-1]} Dev")
+st.subheader("Graphique Commissions Perso Cumulées")
+
+st.line_chart(chart_data)
+if st.checkbox('Show detail Total'):
+    st.write(chart_data)
+
+st.subheader("Graphique Commissions Perso Mensuelles")
+st.line_chart(chart_data2, use_container_width=True)
+if st.checkbox('Show detail Mensuel'):
+    st.write(chart_data2)
+
+
