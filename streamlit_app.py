@@ -34,7 +34,7 @@ st.title('Résultats')
 runners = []
 nb_runner = 0
 for x, m in enumerate(from_d): 
-    print(f'-- mois {m}')
+
     nb_nx = nb_equipe * nb_runner_month
     
     l_r = len(runners)
@@ -59,7 +59,7 @@ for x, m in enumerate(from_d):
 
     }
     runners.append(res)
-    print(res)
+
     
     
     
