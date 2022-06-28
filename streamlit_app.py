@@ -45,6 +45,7 @@ for x, m in enumerate(from_d):
     else: 
         nb_runner += nb_nx
         delta = nb_nx
+        fin_pour = 0
     
     
     res = {
@@ -53,6 +54,7 @@ for x, m in enumerate(from_d):
         "Comm. Perso":int(nb_runner*tjm*20*0.1*(pourcent_perso/100)),
         "Nb Runner Total" :int(nb_runner),
         "Nx Runner":int(nb_nx),
+        "Sortie Runner": int(fin_pour)*-1,
         "Variation Runner":int(delta),
         "CA Total":int(nb_runner*tjm*20),
         
@@ -90,3 +92,9 @@ st.line_chart(chart_data2, use_container_width=True)
 if st.checkbox('Show detail Mensuel'):
     st.table(chart_data2)
 
+
+
+
+st.subheader("Graphiques Runner")
+chart_data3 = df[["Nb Runner Total","Nx Runner","Sortie Runner","Variation Runner"]]
+st.line_chart(chart_data3, use_container_width=True)
