@@ -50,11 +50,11 @@ for x, m in enumerate(from_d):
     res = {
         
         "Date":m,
-        "Comm. Perso":int(nb_runner*tjm*(pourcent_perso/100)),
+        "Comm. Perso":int(nb_runner*tjm*20*0.1*(pourcent_perso/100)),
         "Nb Runner Total" :int(nb_runner),
         "Nx Runner":int(nb_nx),
         "Variation Runner":int(delta),
-        "CA Total":int(nb_runner*tjm),
+        "CA Total":int(nb_runner*tjm*20),
         
 
     }
@@ -89,5 +89,4 @@ st.subheader("Graphique Commissions Perso Mensuelles")
 st.line_chart(chart_data2, use_container_width=True)
 if st.checkbox('Show detail Mensuel'):
     st.write(chart_data2)
-
 
