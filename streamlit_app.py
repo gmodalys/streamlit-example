@@ -23,7 +23,7 @@ with col4:
 with col5:
     tx_renouv = st.slider('Taux renouvellement Runner', 0, 100,10,10,"%s Prct") / 100
 with col6:
-    duree_moy_contrat = st.slider('Durée Moyenne Contrat', 3, 6,3,1,"%d Mois")
+    duree_moy_contrat = st.slider('Durée Moyenne Contrat', 3, 12,3,1,"%d Mois")
 
 
 from_d = pd.date_range(start='07/01/2022', periods=nb_mois, freq='M')
