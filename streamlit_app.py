@@ -70,7 +70,7 @@ df.set_index('Date',inplace=True)
 df['Total Perso'] = df['Comm. Perso'].cumsum()
 
 if st.checkbox('Voir le détail des données'):
-    st.dataframe(df) 
+    st.table(df) 
 
 chart_data = df['Total Perso']
 chart_data2 = df['Comm. Perso']
@@ -83,10 +83,10 @@ st.subheader("Graphique Commissions Perso Cumulées")
 
 st.line_chart(chart_data)
 if st.checkbox('Show detail Total'):
-    st.write(chart_data)
+    st.table(chart_data)
 
 st.subheader("Graphique Commissions Perso Mensuelles")
 st.line_chart(chart_data2, use_container_width=True)
 if st.checkbox('Show detail Mensuel'):
-    st.write(chart_data2)
+    st.table(chart_data2)
 
